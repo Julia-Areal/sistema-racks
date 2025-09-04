@@ -1,0 +1,14 @@
+{% extends "inventario/base.html" %}
+{% block title %}Excluir {{ type }}{% endblock %}
+
+{% block content %}
+<div class="alert alert-danger">
+    <h4 class="alert-heading">Tem certeza que deseja excluir este {{ type }}?</h4>
+    <p><strong>{{ obj }}</strong></p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sim, excluir</button>
+        <a href="javascript:history.back()" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

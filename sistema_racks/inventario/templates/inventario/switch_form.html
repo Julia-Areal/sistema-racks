@@ -1,0 +1,14 @@
+{% extends "inventario/base.html" %}
+{% block title %}Switch{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Cadastrar/Editar Switch</h2>
+<form method="post" class="row g-3">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a href="{% url 'switch_list' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

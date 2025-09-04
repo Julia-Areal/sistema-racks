@@ -1,0 +1,37 @@
+{% extends "inventario/base.html" %}
+{% block title %}Lista de Switches{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Switches</h2>
+    <a href="{% url 'switch_create' %}" class="btn btn-success">+ Adicionar Switch</a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nº Patrimônio</th>
+            <th>Qtd. Portas</th>
+            <th>Rack</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for switch in switches %}
+        <tr>
+            <td>{{ switch.id }}</td>
+            <td>{{ switch.num_patrimonio }}</td>
+            <td>{{ switch.quantidade_portas }}</td>
+            <td>{{ switch.rack.num_patrimonio }}</td>
+            <td>
+                <a href="{% url 'switch_update' switch.id %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'switch_delete' switch.id %}" class="btn btn-sm btn-danger">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-center">Nenhum switch cadastrado.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

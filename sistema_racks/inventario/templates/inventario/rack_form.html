@@ -1,0 +1,12 @@
+{% extends "inventario/base.html" %}
+{% block title %}Rack{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Cadastrar/Editar Rack</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{% url 'rack_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
