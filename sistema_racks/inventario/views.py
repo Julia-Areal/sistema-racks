@@ -5,6 +5,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import Rack, Switch
 from .forms import RackForm, SwitchForm
 
+# resquest handlers
+
 # ---------------------------
 # Home
 # ---------------------------
