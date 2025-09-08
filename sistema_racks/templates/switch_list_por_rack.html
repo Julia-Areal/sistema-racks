@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Switches do Rack {{ rack.num_patrimonio }}{% endblock %}
+
+{% block content %}
+<h2>Switches do Rack {{ rack.num_patrimonio }}</h2>
+<a href="{% url 'rack_list' %}" class="btn btn-secondary mb-3">← Voltar</a>
+
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nº Patrimônio</th>
+            <th>Qtd. Portas</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for switch in switches %}
+        <tr>
+            <td>{{ switch.id }}</td>
+            <td>{{ switch.num_patrimonio }}</td>
+            <td>{{ switch.quantidade_portas }}</td>
+            <td>
+                <a href="{% url 'switch_update' switch.id %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'switch_delete' switch.id %}" class="btn btn-sm btn-danger">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center">Nenhum switch neste rack.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

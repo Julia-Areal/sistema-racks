@@ -6,4 +6,4 @@ from .models import Switch, Porta
 def criar_portas(sender, instance, created, **kwargs):
     if created:
         for i in range(1, instance.quantidade_portas + 1):
-            Porta.objects.create(switch=instance, numero=i)
+            Porta.objects.create(numero=i, switch=instance)

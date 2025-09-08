@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes do Switch{% endblock %}
+
+{% block content %}
+<h2>Switch {{ switch.id }} ({{ switch.quantidade_portas }} portas)</h2>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Porta</th>
+      <th>Descrição</th>
+      <th>Ação</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for porta in switch.portas.all %}
+    <tr>
+      <td>{{ porta.numero }}</td>
+      <td>
+        <form method="post" class="d-flex">
+          {% csrf_token %}
+          <input type="hidden" name="porta_id" value="{{ porta.id }}">
+          <input type="text" name="descricao" value="{{ porta.descricao|default:'' }}" class="form-control me-2">
+          <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+        </form>
+      </td>
+      <td>{{ porta.descricao }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{% url 'switch_list' %}" class="btn btn-secondary">Voltar</a>
+{% endblock %}

@@ -1,0 +1,53 @@
+[
+  {
+    "model": "inventario.rack",
+    "pk": 1,
+    "fields": {
+      "num_patrimonio": "R001",
+      "localizacao": "Sala 1"
+    }
+  },
+  {
+    "model": "inventario.rack",
+    "pk": 2,
+    "fields": {
+      "num_patrimonio": "R002",
+      "localizacao": "Sala 2"
+    }
+  },
+  {
+    "model": "inventario.rack",
+    "pk": 3,
+    "fields": {
+      "num_patrimonio": "R003",
+      "localizacao": "Sala 3"
+    }
+  },
+  {
+    "model": "inventario.switch",
+    "pk": 1,
+    "fields": {
+      "num_patrimonio": "S001",
+      "quantidade_portas": 24,
+      "id_rack": 1
+    }
+  },
+  {
+    "model": "inventario.switch",
+    "pk": 2,
+    "fields": {
+      "num_patrimonio": "S002",
+      "quantidade_portas": 48,
+      "id_rack": 2
+    }
+  },
+  {
+    "model": "inventario.switch",
+    "pk": 3,
+    "fields": {
+      "num_patrimonio": "S003",
+      "quantidade_portas": 16,
+      "id_rack": 3
+    }
+  }
+]

@@ -13,6 +13,8 @@ urlpatterns = [
     path("racks/novo/", views.rack_create, name="rack_create"),
     path("racks/<int:pk>/editar/", views.rack_update, name="rack_update"),
     path("racks/<int:pk>/excluir/", views.rack_delete, name="rack_delete"),
+    path("racks/<int:rack_id>/switches/", views.switches_por_rack, name="switches_por_rack"),
+
 
     # Switches
     path("switches/", views.switch_list, name="switch_list"),
@@ -20,5 +22,11 @@ urlpatterns = [
     path("switches/<int:pk>/editar/", views.switch_update, name="switch_update"),
     path("switches/<int:pk>/excluir/", views.switch_delete, name="switch_delete"),
     path("porta/<int:porta_id>/update/", views.porta_update, name="porta_update"),
+    path("switch/<int:pk>/", views.switch_detail, name="switch_detail"),
+    path("switch/<int:switch_id>/portas/", views.editar_portas, name="editar_portas"),
+
+
+    # Histórico
+    path("historico/", views.historico_list, name="historico_list"),
 
 ]
