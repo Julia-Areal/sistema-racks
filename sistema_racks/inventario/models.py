@@ -8,34 +8,30 @@ class Bloco(models.Model):
         return self.nome_bloco
 
 
-# Racks
 class Rack(models.Model):
-    num_patrimonio = models.IntegerField(unique=True, null=True, blank=True)
-    capacidade_u = models.IntegerField(null=True, blank=True)
-    sala = models.CharField(max_length=50, null=True, blank=True)
-    bloco = models.ForeignKey(Bloco, on_delete=models.CASCADE, related_name="racks", null="True")
+    num_patrimonio = models.CharField(max_length=50, unique=True)
+    localizacao = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"Rack {self.num_patrimonio or '-'} - {self.sala or 'Sem sala'}"
+        return f"Rack {self.num_patrimonio} - {self.localizacao}"
 
 
-# Switches
 class Switch(models.Model):
-    quantidade_portas = models.SmallIntegerField()
-    num_patrimonio = models.IntegerField(unique=True, null=True, blank=True)
-    rack = models.ForeignKey(Rack, on_delete=models.CASCADE, related_name="switches")
+    num_patrimonio = models.CharField(max_length=50, unique=True)
+    quantidade_portas = models.IntegerField()
+    id_rack = models.ForeignKey(Rack, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Switch {self.num_patrimonio or '-'} ({self.quantidade_portas} portas)"
+        return f"Switch {self.num_patrimonio} ({self.quantidade_portas} portas)"
 
 
-# Portas
 class Porta(models.Model):
-    numero = models.PositiveIntegerField()  # número da porta no switch
-    switch = models.ForeignKey(Switch, on_delete=models.CASCADE, related_name="portas")
+    switch = models.ForeignKey(Switch, related_name="portas", on_delete=models.CASCADE)
+    numero = models.IntegerField()
+    valor = models.CharField(max_length=100, blank=True, null=True)  # ex: IP, host, etc.
 
     def __str__(self):
-        return f"Porta {self.numero} - Switch {self.switch.num_patrimonio}"
+        return f"Porta {self.numero} - {self.valor or 'vazia'}"
 
 
 # Histórico

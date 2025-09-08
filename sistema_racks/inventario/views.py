@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Rack, Switch
+from django.views.decorators.http import require_POST
+from .models import Rack, Switch, Porta
 from .forms import RackForm, SwitchForm
 
 # resquest handlers
@@ -11,7 +12,7 @@ from .forms import RackForm, SwitchForm
 # Home
 # ---------------------------
 def home(request):
-    return render(request, "inventario/home.html")
+    return render(request, "home.html")
 
 # ---------------------------
 # Autenticação
@@ -25,7 +26,7 @@ def login_view(request):
             return redirect("home")
     else:
         form = AuthenticationForm()
-    return render(request, "inventario/login.html", {"form": form})
+    return render(request, "login.html", {"form": form})
 
 def logout_view(request):
     logout(request)
@@ -37,7 +38,7 @@ def logout_view(request):
 @login_required
 def rack_list(request):
     racks = Rack.objects.all()
-    return render(request, "inventario/rack_list.html", {"racks": racks})
+    return render(request, "rack_list.html", {"racks": racks})
 
 @login_required
 def rack_create(request):
@@ -48,7 +49,7 @@ def rack_create(request):
             return redirect("rack_list")
     else:
         form = RackForm()
-    return render(request, "inventario/rack_form.html", {"form": form})
+    return render(request, "rack_form.html", {"form": form})
 
 @login_required
 def rack_update(request, pk):
@@ -60,7 +61,7 @@ def rack_update(request, pk):
             return redirect("rack_list")
     else:
         form = RackForm(instance=rack)
-    return render(request, "inventario/rack_form.html", {"form": form})
+    return render(request, "rack_form.html", {"form": form})
 
 @login_required
 def rack_delete(request, pk):
@@ -68,7 +69,7 @@ def rack_delete(request, pk):
     if request.method == "POST":
         rack.delete()
         return redirect("rack_list")
-    return render(request, "inventario/confirm_delete.html", {"obj": rack, "type": "Rack"})
+    return render(request, "confirm_delete.html", {"obj": rack, "type": "Rack"})
 
 # ---------------------------
 # Switches
@@ -76,7 +77,7 @@ def rack_delete(request, pk):
 @login_required
 def switch_list(request):
     switches = Switch.objects.all()
-    return render(request, "inventario/switch_list.html", {"switches": switches})
+    return render(request, "switch_list.html", {"switches": switches})
 
 @login_required
 def switch_create(request):
@@ -87,7 +88,7 @@ def switch_create(request):
             return redirect("switch_list")
     else:
         form = SwitchForm()
-    return render(request, "inventario/switch_form.html", {"form": form})
+    return render(request, "switch_form.html", {"form": form})
 
 @login_required
 def switch_update(request, pk):
@@ -99,7 +100,7 @@ def switch_update(request, pk):
             return redirect("switch_list")
     else:
         form = SwitchForm(instance=switch)
-    return render(request, "inventario/switch_form.html", {"form": form})
+    return render(request, "switch_form.html", {"form": form})
 
 @login_required
 def switch_delete(request, pk):
@@ -107,4 +108,12 @@ def switch_delete(request, pk):
     if request.method == "POST":
         switch.delete()
         return redirect("switch_list")
-    return render(request, "inventario/confirm_delete.html", {"obj": switch, "type": "Switch"})
+    return render(request, "confirm_delete.html", {"obj": switch, "type": "Switch"})
+
+@require_POST
+def porta_update(request, porta_id):
+    porta = get_object_or_404(Porta, id=porta_id)
+    valor = request.POST.get("valor")
+    porta.valor = valor
+    porta.save()
+    return redirect("switch_list")

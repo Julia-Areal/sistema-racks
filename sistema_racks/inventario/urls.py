@@ -19,4 +19,6 @@ urlpatterns = [
     path("switches/novo/", views.switch_create, name="switch_create"),
     path("switches/<int:pk>/editar/", views.switch_update, name="switch_update"),
     path("switches/<int:pk>/excluir/", views.switch_delete, name="switch_delete"),
+    path("porta/<int:porta_id>/update/", views.porta_update, name="porta_update"),
+
 ]
