@@ -4,6 +4,12 @@
 {% block content %}
 <div class="text-center">
     <h1 class="mb-4">Bem-vindo ao Sistema de Racks</h1>
-    <p class="lead">Gerencie racks, switches e mantenha histórico de manutenções.</p>
+    <p class="lead mb-4">Gerencie racks, switches e mantenha histórico de manutenções.</p>
+
+    <div class="d-flex justify-content-center gap-3">
+        <a href="{% url 'rack_list' %}" class="btn btn-primary btn-lg">Gerenciar Racks</a>
+        <a href="{% url 'switch_list' %}" class="btn btn-success btn-lg">Gerenciar Switches</a>
+        <!-- <a href="{% url 'historico_list' %}" class="btn btn-secondary btn-lg">Histórico</a> -->
+    </div>
 </div>
 {% endblock %}

@@ -12,13 +12,12 @@ class Bloco(models.Model):
 class Rack(models.Model):
     id = models.AutoField(primary_key=True)
     num_patrimonio = models.CharField(max_length=50, unique=True)
-    # localizacao = models.CharField(max_length=100)
     capacidade_u = models.IntegerField()
     sala = models.CharField(max_length=100)
     id_bloco = models.ForeignKey(Bloco, on_delete=models.CASCADE, related_name="racks")
 
     def __str__(self):
-        return f"Rack {self.num_patrimonio} - {self.localizacao}"
+        return f"Rack {self.num_patrimonio} - {self.id_bloco.nome_bloco}"
 
 
 class Switch(models.Model):

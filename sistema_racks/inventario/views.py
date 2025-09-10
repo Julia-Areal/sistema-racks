@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.decorators.http import require_POST
-from .models import Rack, Switch, Porta, Historico
+from .models import Rack, Switch, Porta, Historico, Bloco
 from .forms import RackForm, SwitchForm, PortaFormSet
 from .utils import registrar_historico
 
@@ -40,7 +40,20 @@ def logout_view(request):
 @login_required
 def rack_list(request):
     racks = Rack.objects.all()
-    return render(request, "rack_list.html", {"racks": racks})
+    blocos = Bloco.objects.all()
+
+    q = request.GET.get("q")
+    bloco_id = request.GET.get("bloco")
+    capacidade_min = request.GET.get("capacidade")
+
+    if q:
+        racks = racks.filter(num_patrimonio__icontains=q) | racks.filter(sala__icontains=q)
+    if bloco_id:
+        racks = racks.filter(id_bloco__id=bloco_id)
+    if capacidade_min:
+        racks = racks.filter(capacidade_u__gte=capacidade_min)
+
+    return render(request, "rack_list.html", {"racks": racks, "blocos": blocos})
 
 @login_required
 @registrar_historico("Criação de Rack", "Rack")
@@ -84,7 +97,28 @@ def rack_delete(request, pk):
 @login_required
 def switch_list(request):
     switches = Switch.objects.all()
-    return render(request, "switch_list.html", {"switches": switches})
+    racks = Rack.objects.all()
+    blocos = Bloco.objects.all()
+
+    q = request.GET.get("q")
+    portas = request.GET.get("portas")
+    rack_id = request.GET.get("rack")
+    bloco_id = request.GET.get("bloco")
+
+    if q:
+        switches = switches.filter(num_patrimonio__icontains=q)
+    if portas:
+        switches = switches.filter(quantidade_portas__gte=portas)
+    if rack_id:
+        switches = switches.filter(id_rack__id=rack_id)
+    if bloco_id:
+        switches = switches.filter(id_rack__id_bloco__id=bloco_id)
+
+    return render(request, "switch_list.html", {
+        "switches": switches,
+        "racks": racks,
+        "blocos": blocos,
+    })
 
 @login_required
 @registrar_historico("Criação de Switch", "Switch")
@@ -131,18 +165,20 @@ def switches_por_rack(request, rack_id):
     })
 
 @login_required
+@registrar_historico("Edição de Portas do Switch", "Switch")
+def salvar_portas_switch(request, switch_id):
+    switch = get_object_or_404(Switch, id=switch_id)
+    if request.method == "POST":
+        for porta in switch.portas.all():
+            novo_valor = request.POST.get(f"porta_{porta.id}")
+            porta.valor = novo_valor
+            porta.save()
+        return redirect("switch_detail", switch_id=switch.id)
+
+@login_required
 def switch_detail(request, pk):
     switch = get_object_or_404(Switch, pk=pk)
-
-    if request.method == "POST":
-        porta_id = request.POST.get("porta_id")
-        valor = request.POST.get("descricao")
-        porta = get_object_or_404(Porta, id=porta_id, switch=switch)
-        porta.valor = valor
-        porta.save()
-        return redirect("switch_detail", pk=switch.id)
-
-    return render(request, "switch-detail.html", {"switch": switch})
+    return render(request, "switch_detail.html", {"switch": switch})
 
 @require_POST
 @registrar_historico("Edição de Porta", "Porta")

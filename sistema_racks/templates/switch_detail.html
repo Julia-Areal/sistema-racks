@@ -1,35 +1,60 @@
 {% extends "base.html" %}
-
-{% block title %}Detalhes do Switch{% endblock %}
+{% block title %}Detalhes do Switch {{ switch.num_patrimonio }}{% endblock %}
 
 {% block content %}
-<h2>Switch {{ switch.id }} ({{ switch.quantidade_portas }} portas)</h2>
+<h2>Switch {{ switch.num_patrimonio }} - {{ switch.quantidade_portas }} portas</h2>
+<a href="{% url 'rack_list' %}" class="btn btn-secondary mb-3">← Voltar aos Racks</a>
 
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th>Porta</th>
-      <th>Descrição</th>
-      <th>Ação</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for porta in switch.portas.all %}
-    <tr>
-      <td>{{ porta.numero }}</td>
-      <td>
-        <form method="post" class="d-flex">
-          {% csrf_token %}
-          <input type="hidden" name="porta_id" value="{{ porta.id }}">
-          <input type="text" name="descricao" value="{{ porta.descricao|default:'' }}" class="form-control me-2">
-          <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
-        </form>
-      </td>
-      <td>{{ porta.descricao }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<form method="post" action="{% url 'salvar_portas_switch' switch.id %}">
+    {% csrf_token %}
+    <table class="table table-bordered text-center align-middle">
+        <tbody>
+            <!-- Linha 1: Números das portas ímpares -->
+            <tr>
+                {% for porta in switch.portas.all %}
+                    {% if porta.numero|divisibleby:2 == False %}
+                        <td><strong>{{ porta.numero }}</strong></td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
 
-<a href="{% url 'switch_list' %}" class="btn btn-secondary">Voltar</a>
+            <!-- Linha 2: Valores das portas ímpares -->
+            <tr>
+                {% for porta in switch.portas.all %}
+                    {% if porta.numero|divisibleby:2 == False %}
+                        <td>
+                            <input type="text" name="porta_{{ porta.id }}" value="{{ porta.valor }}" 
+                                   class="form-control form-control-sm">
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+
+            <!-- Linha 3: Valores das portas pares -->
+            <tr>
+                {% for porta in switch.portas.all %}
+                    {% if porta.numero|divisibleby:2 %}
+                        <td>
+                            <input type="text" name="porta_{{ porta.id }}" value="{{ porta.valor }}" 
+                                   class="form-control form-control-sm">
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+
+            <!-- Linha 4: Números das portas pares -->
+            <tr>
+                {% for porta in switch.portas.all %}
+                    {% if porta.numero|divisibleby:2 %}
+                        <td><strong>{{ porta.numero }}</strong></td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center mt-3">
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    </div>
+</form>
 {% endblock %}

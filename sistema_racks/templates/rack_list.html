@@ -7,16 +7,38 @@
     <a href="{% url 'rack_create' %}" class="btn btn-success">+ Adicionar Rack</a>
 </div>
 
+<!-- Barra de Pesquisa e Filtros -->
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <input type="text" name="q" class="form-control" placeholder="Buscar por patrimônio ou sala"
+               value="{{ request.GET.q }}">
+    </div>
+    <div class="col-md-3">
+        <select name="bloco" class="form-select">
+            <option value="">-- Todos os blocos --</option>
+            {% for bloco in blocos %}
+                <option value="{{ bloco.id }}" {% if request.GET.bloco == bloco.id|stringformat:"s" %}selected{% endif %}>
+                    {{ bloco.nome_bloco }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <input type="number" name="capacidade" class="form-control" placeholder="Capacidade mínima (U)"
+               value="{{ request.GET.capacidade }}">
+    </div>
+    <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+</form>
+
+<!-- Grid de Racks -->
 <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for rack in racks %}
     <div class="col">
         <div class="card shadow-sm h-100">
             <div class="card-body">
-                <h5 class="card-title">
-                    <a href="{% url 'switches_por_rack' rack.id %}" class="stretched-link text-decoration-none">
-                        Rack {{ rack.num_patrimonio }}
-                    </a>
-                </h5>
+                <h5 class="card-title">Rack {{ rack.num_patrimonio }}</h5>
                 <p class="card-text">
                     <strong>Sala:</strong> {{ rack.sala|default:"Não informado" }} <br>
                     <strong>Capacidade:</strong> {{ rack.capacidade_u|default:"-" }}U <br>
@@ -24,6 +46,7 @@
                 </p>
             </div>
             <div class="card-footer d-flex justify-content-between">
+                <a href="{% url 'switches_por_rack' rack.id %}" class="btn btn-info btn-sm">Ver Switches</a>
                 <a href="{% url 'rack_update' rack.id %}" class="btn btn-warning btn-sm">Editar</a>
                 <a href="{% url 'rack_delete' rack.id %}" class="btn btn-danger btn-sm">Excluir</a>
             </div>

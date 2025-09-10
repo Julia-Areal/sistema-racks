@@ -7,13 +7,50 @@
     <a href="{% url 'switch_create' %}" class="btn btn-success">+ Adicionar Switch</a>
 </div>
 
+<!-- Barra de Pesquisa e Filtros -->
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <input type="text" name="q" class="form-control" placeholder="Buscar por patrimônio"
+               value="{{ request.GET.q }}">
+    </div>
+    <div class="col-md-3">
+        <input type="number" name="portas" class="form-control" placeholder="Qtd mínima de portas"
+               value="{{ request.GET.portas }}">
+    </div>
+    <div class="col-md-3">
+        <select name="rack" class="form-select">
+            <option value="">-- Todos os racks --</option>
+            {% for rack in racks %}
+                <option value="{{ rack.id }}" {% if request.GET.rack == rack.id|stringformat:"s" %}selected{% endif %}>
+                    Rack {{ rack.num_patrimonio }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="bloco" class="form-select">
+            <option value="">-- Todos os blocos --</option>
+            {% for bloco in blocos %}
+                <option value="{{ bloco.id }}" {% if request.GET.bloco == bloco.id|stringformat:"s" %}selected{% endif %}>
+                    {{ bloco.nome_bloco }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-12 d-grid">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+</form>
+
+<!-- Acordeão de Switches -->
 <div class="accordion" id="switchAccordion">
     {% for switch in switches %}
     <div class="accordion-item">
         <h2 class="accordion-header" id="heading{{ switch.id }}">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#collapse{{ switch.id }}" aria-expanded="false">
-                {{ switch.num_patrimonio }} - {{ switch.quantidade_portas }} portas
+                {{ switch.num_patrimonio }} - {{ switch.quantidade_portas }} portas 
+                (Rack {{ switch.id_rack.num_patrimonio }} - {{ switch.id_rack.id_bloco.nome_bloco }})
             </button>
         </h2>
         <div id="collapse{{ switch.id }}" class="accordion-collapse collapse" 
@@ -47,6 +84,8 @@
             </div>
         </div>
     </div>
+    {% empty %}
+    <div class="alert alert-info">Nenhum switch cadastrado.</div>
     {% endfor %}
 </div>
 {% endblock %}

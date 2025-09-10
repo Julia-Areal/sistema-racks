@@ -20,7 +20,8 @@
             <td>{{ switch.id }}</td>
             <td>{{ switch.num_patrimonio }}</td>
             <td>{{ switch.quantidade_portas }}</td>
-            <td>
+            <td class="d-flex gap-2">
+                <a href="{% url 'switch_detail' switch.id %}" class="btn btn-sm btn-info">Ver Portas</a>
                 <a href="{% url 'switch_update' switch.id %}" class="btn btn-sm btn-warning">Editar</a>
                 <a href="{% url 'switch_delete' switch.id %}" class="btn btn-sm btn-danger">Excluir</a>
             </td>
