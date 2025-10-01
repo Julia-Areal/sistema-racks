@@ -3,7 +3,7 @@
 
 {% block content %}
 <h2>Switch {{ switch.num_patrimonio }} - {{ switch.quantidade_portas }} portas</h2>
-<a href="{% url 'rack_list' %}" class="btn btn-secondary mb-3">← Voltar aos Racks</a>
+<a href="{% url 'switch_list' %}" class="btn btn-secondary mb-3">← Voltar</a>
 
 <form method="post" action="{% url 'salvar_portas_switch' switch.id %}">
     {% csrf_token %}

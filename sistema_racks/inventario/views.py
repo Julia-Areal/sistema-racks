@@ -173,7 +173,7 @@ def salvar_portas_switch(request, switch_id):
             novo_valor = request.POST.get(f"porta_{porta.id}")
             porta.valor = novo_valor
             porta.save()
-        return redirect("switch_detail", switch_id=switch.id)
+        return redirect("switch_detail", pk=switch.id)
 
 @login_required
 def switch_detail(request, pk):

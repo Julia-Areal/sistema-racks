@@ -1,12 +1,50 @@
 {% extends "base.html" %}
-{% block title %}Rack{% endblock %}
+{% block title %}Cadastrar/Editar Rack{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Cadastrar/Editar Rack</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Salvar</button>
-    <a href="{% url 'rack_list' %}" class="btn btn-secondary">Cancelar</a>
-</form>
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="mb-4 text-center">Cadastrar / Editar Rack</h2>
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="id_num_patrimonio" class="form-label">Número de Patrimônio</label>
+              {{ form.num_patrimonio }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_capacidade_u" class="form-label">Capacidade (U)</label>
+              {{ form.capacidade_u }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_sala" class="form-label">Sala</label>
+              {{ form.sala }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_id_bloco" class="form-label">Bloco</label>
+              {{ form.id_bloco }}
+            </div>
+          </div>
+
+          <div class="mt-4 d-flex justify-content-between">
+            <a href="{% url 'rack_list' %}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  input, select, textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+    border: 1px solid #ced4da;
+  }
+</style>
 {% endblock %}

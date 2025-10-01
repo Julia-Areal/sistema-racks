@@ -1,14 +1,77 @@
 {% extends "base.html" %}
-{% block title %}Switch{% endblock %}
+{% block title %}Cadastrar/Editar Switch{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Cadastrar/Editar Switch</h2>
-<form method="post" class="row g-3">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <div class="col-12">
-        <button type="submit" class="btn btn-primary">Salvar</button>
-        <a href="{% url 'switch_list' %}" class="btn btn-secondary">Cancelar</a>
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="mb-4 text-center">Cadastrar / Editar Switch</h2>
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="id_num_patrimonio" class="form-label">Número de Patrimônio</label>
+              {{ form.num_patrimonio }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_quantidade_portas" class="form-label">Quantidade de Portas</label>
+              {{ form.quantidade_portas }}
+            </div>
+
+            <div class="col-md-6">
+              <label for="id_endereco_ip" class="form-label">Endereço IP</label>
+              {{ form.endereco_ip }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_mac_address" class="form-label">MAC Address</label>
+              {{ form.mac_address }}
+            </div>
+
+            <div class="col-md-6">
+              <label for="id_hostname" class="form-label">Hostname</label>
+              {{ form.hostname }}
+            </div>
+            <div class="col-md-6">
+              <label for="id_modelo" class="form-label">Modelo</label>
+              {{ form.modelo }}
+            </div>
+
+            <div class="col-12">
+              <label for="id_descricao" class="form-label">Descrição</label>
+              {{ form.descricao }}
+            </div>
+
+            <div class="col-12">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="id_principal" name="principal" {% if form.principal.value %}checked{% endif %}>
+                    <label for="id_principal" class="form-check-label">Switch Principal do Rack</label>
+                </div>
+            </div>
+
+            <div class="col-12">
+              <label for="id_id_rack" class="form-label">Rack</label>
+              {{ form.id_rack }}
+            </div>
+          </div>
+
+          <div class="mt-4 d-flex justify-content-between">
+            <a href="{% url 'switch_list' %}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
     </div>
-</form>
+  </div>
+</div>
+
+<style>
+  input, select, textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+    border: 1px solid #ced4da;
+  }
+</style>
 {% endblock %}

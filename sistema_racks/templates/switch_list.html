@@ -2,34 +2,32 @@
 {% block title %}Lista de Switches{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Switches</h2>
     <a href="{% url 'switch_create' %}" class="btn btn-success">+ Adicionar Switch</a>
 </div>
 
-<!-- Barra de Pesquisa e Filtros -->
+<!-- Barra de filtros -->
 <form method="get" class="row g-3 mb-4">
     <div class="col-md-3">
-        <input type="text" name="q" class="form-control" placeholder="Buscar por patrimônio"
-               value="{{ request.GET.q }}">
+        <input type="text" name="num_patrimonio" class="form-control" placeholder="Nº Patrimônio" value="{{ request.GET.num_patrimonio }}">
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="quantidade_portas" class="form-control" placeholder="Qtd. Portas" value="{{ request.GET.quantidade_portas }}">
     </div>
     <div class="col-md-3">
-        <input type="number" name="portas" class="form-control" placeholder="Qtd mínima de portas"
-               value="{{ request.GET.portas }}">
-    </div>
-    <div class="col-md-3">
-        <select name="rack" class="form-select">
-            <option value="">-- Todos os racks --</option>
+        <select name="id_rack" class="form-select">
+            <option value="">Todos os racks</option>
             {% for rack in racks %}
-                <option value="{{ rack.id }}" {% if request.GET.rack == rack.id|stringformat:"s" %}selected{% endif %}>
-                    Rack {{ rack.num_patrimonio }}
+                <option value="{{ rack.id }}" {% if request.GET.id_rack == rack.id|stringformat:"s" %}selected{% endif %}>
+                    {{ rack.num_patrimonio }}
                 </option>
             {% endfor %}
         </select>
     </div>
     <div class="col-md-3">
         <select name="bloco" class="form-select">
-            <option value="">-- Todos os blocos --</option>
+            <option value="">Todos os blocos</option>
             {% for bloco in blocos %}
                 <option value="{{ bloco.id }}" {% if request.GET.bloco == bloco.id|stringformat:"s" %}selected{% endif %}>
                     {{ bloco.nome_bloco }}
@@ -37,55 +35,43 @@
             {% endfor %}
         </select>
     </div>
-    <div class="col-md-12 d-grid">
-        <button type="submit" class="btn btn-primary">Filtrar</button>
+    <div class="col-md-1">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
     </div>
 </form>
 
-<!-- Acordeão de Switches -->
-<div class="accordion" id="switchAccordion">
+<div class="row row-cols-1 row-cols-md-4 g-3">
     {% for switch in switches %}
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="heading{{ switch.id }}">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#collapse{{ switch.id }}" aria-expanded="false">
-                {{ switch.num_patrimonio }} - {{ switch.quantidade_portas }} portas 
-                (Rack {{ switch.id_rack.num_patrimonio }} - {{ switch.id_rack.id_bloco.nome_bloco }})
-            </button>
-        </h2>
-        <div id="collapse{{ switch.id }}" class="accordion-collapse collapse" 
-             aria-labelledby="heading{{ switch.id }}" data-bs-parent="#switchAccordion">
-            <div class="accordion-body">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Porta</th>
-                            <th>Valor</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for porta in switch.portas.all %}
-                        <tr>
-                            <td>{{ porta.numero }}</td>
-                            <td>
-                                <form method="post" action="{% url 'porta_update' porta.id %}">
-                                    {% csrf_token %}
-                                    <input type="text" name="valor" value="{{ porta.valor }}" class="form-control form-control-sm">
-                            </td>
-                            <td>
-                                    <button type="submit" class="btn btn-sm btn-primary">Salvar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    <div class="col">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ switch.num_patrimonio }}</h5>
+                <p class="card-text small">
+                    <strong>Portas:</strong> {{ switch.quantidade_portas }}<br>
+                    <strong>Rack:</strong> {{ switch.id_rack.num_patrimonio }}<br>
+                    <strong>Bloco:</strong> {{ switch.id_rack.id_bloco.nome_bloco }}
+                </p>
+            </div>
+            <div class="card-footer d-flex justify-content-around">
+                <!-- Ver portas -->
+                <a href="{% url 'switch_detail' switch.id %}" class="btn btn-sm btn-info" title="Ver Portas">
+                    <i class="bi bi-door-closed"></i> Portas
+                </a>
+                <!-- Editar -->
+                <a href="{% url 'switch_update' switch.id %}" class="btn btn-sm btn-warning" title="Editar Switch">
+                    <i class="bi bi-pencil-square"></i> Editar
+                </a>
+                <!-- Excluir -->
+                <a href="{% url 'switch_delete' switch.id %}" class="btn btn-sm btn-danger" title="Excluir Switch">
+                    <i class="bi bi-trash"></i> Excluir
+                </a>
             </div>
         </div>
     </div>
     {% empty %}
-    <div class="alert alert-info">Nenhum switch cadastrado.</div>
+    <div class="col">
+        <div class="alert alert-info text-center">Nenhum switch encontrado.</div>
+    </div>
     {% endfor %}
 </div>
 {% endblock %}

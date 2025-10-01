@@ -3,43 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Sistema Racks{% endblock %}</title>
+    <title>Login - Sistema Racks</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    {% load static %}
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            max-width: 400px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 2rem;
+            background: #fff;
+        }
+        .login-card img {
+            max-width: 120px;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">Sistema Racks</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto">
-                </ul>
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item"><span class="navbar-text me-3">Olá, {{ user.username }}</span></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Sair</a></li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Entrar</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <div class="login-card text-center">
+        <!-- Logo -->
+        <img src="{% static 'img/logo.png' %}" alt="Logo">
 
-    <!-- Conteúdo -->
-    <div class="container">
-       <div class="row justify-content-center">
-            <div class="col-md-4">
-                <h2 class="mb-4">Entrar</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary w-100">Login</button>
-                </form>
+        <!-- Nome do sistema -->
+        <h3 class="mb-4">Sistema de Gerenciamento de Racks</h3>
+
+        <!-- Formulário -->
+        <form method="post" class="text-start">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Usuário</label>
+                <input type="text" name="username" id="id_username" class="form-control" required>
             </div>
-        </div>
+
+            <div class="mb-3">
+                <label for="id_password" class="form-label">Senha</label>
+                <input type="password" name="password" id="id_password" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+        </form>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

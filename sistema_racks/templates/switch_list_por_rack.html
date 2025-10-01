@@ -2,33 +2,47 @@
 {% block title %}Switches do Rack {{ rack.num_patrimonio }}{% endblock %}
 
 {% block content %}
-<h2>Switches do Rack {{ rack.num_patrimonio }}</h2>
-<a href="{% url 'rack_list' %}" class="btn btn-secondary mb-3">← Voltar</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Switches do Rack {{ rack.num_patrimonio }} - Bloco {{ rack.id_bloco.nome_bloco }}</h2>
+    <a href="{% url 'rack_list' %}" class="btn btn-secondary">← Voltar</a>
+</div>
 
-<table class="table table-striped">
-    <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Nº Patrimônio</th>
-            <th>Qtd. Portas</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for switch in switches %}
-        <tr>
-            <td>{{ switch.id }}</td>
-            <td>{{ switch.num_patrimonio }}</td>
-            <td>{{ switch.quantidade_portas }}</td>
-            <td class="d-flex gap-2">
-                <a href="{% url 'switch_detail' switch.id %}" class="btn btn-sm btn-info">Ver Portas</a>
-                <a href="{% url 'switch_update' switch.id %}" class="btn btn-sm btn-warning">Editar</a>
-                <a href="{% url 'switch_delete' switch.id %}" class="btn btn-sm btn-danger">Excluir</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="4" class="text-center">Nenhum switch neste rack.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="row row-cols-1 row-cols-md-4 g-3">
+    {% for switch in switches %}
+    <div class="col">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ switch.num_patrimonio }}</h5>
+                <p class="card-text small">
+                    <strong>Hostname:</strong> {{ switch.hostname }}<br>
+                    <strong>Portas:</strong> {{ switch.quantidade_portas }}<br>
+                    <strong>IP:</strong> {{ switch.endereco_ip }}<br>
+                    <strong>MAC:</strong> {{ switch.mac_address }}<br>
+                    {% if switch.principal %}
+                        <strong>Switch Principal</strong>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="card-footer d-flex justify-content-around">
+                <!-- Ver portas -->
+                <a href="{% url 'switch_detail' switch.id %}" class="btn btn-sm btn-info" title="Ver Portas">
+                    <i class="bi bi-door-closed"></i> Portas
+                </a>
+                <!-- Editar -->
+                <a href="{% url 'switch_update' switch.id %}" class="btn btn-sm btn-warning" title="Editar Switch">
+                    <i class="bi bi-pencil-square"></i> Editar
+                </a>
+                <!-- Excluir -->
+                <a href="{% url 'switch_delete' switch.id %}" class="btn btn-sm btn-danger" title="Excluir Switch">
+                    <i class="bi bi-trash"></i> Excluir
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col">
+        <div class="alert alert-info text-center">Nenhum switch cadastrado neste rack.</div>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}
