@@ -20,7 +20,7 @@ class SwitchForm(forms.ModelForm):
         fields = [
             "num_patrimonio", "quantidade_portas", "endereco_ip",
             "mac_address", "hostname", "modelo", "descricao",
-            "principal", "id_rack"
+            "principal", "id_rack", "orientacao"
         ]
 
 

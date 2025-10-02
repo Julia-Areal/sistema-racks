@@ -13,6 +13,8 @@ urlpatterns = [
     path("racks/<int:pk>/editar/", views.rack_update, name="rack_update"),
     path("racks/<int:pk>/excluir/", views.rack_delete, name="rack_delete"),
     path("racks/<int:rack_id>/switches/", views.switches_por_rack, name="switches_por_rack"),
+    path("racks/<int:rack_id>/switches/<int:pk>/", views.switch_detail, name="switch_detail_rack"),
+    path("racks/<int:rack_id>/switches/novo/", views.switch_create_in_rack, name="switch_create_in_rack"),
 
     # Switches
     path("switches/", views.switch_list, name="switch_list"),

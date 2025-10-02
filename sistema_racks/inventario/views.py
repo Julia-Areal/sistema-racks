@@ -10,13 +10,6 @@ from .utils import registrar_historico
 # request handlers
 
 # ---------------------------
-# Home
-# ---------------------------
-@login_required
-def home(request):
-    return render(request, "home.html")
-
-# ---------------------------
 # Autenticação
 # ---------------------------
 def login_view(request):
@@ -122,6 +115,26 @@ def switch_list(request):
 
 @login_required
 @registrar_historico("Criação de Switch", "Switch")
+def switch_create_in_rack(request, rack_id):
+    rack = get_object_or_404(Rack, id=rack_id)
+
+    if request.method == "POST":
+        form = SwitchForm(request.POST)
+        if form.is_valid():
+            switch = form.save(commit=False)
+            switch.rack = rack
+            switch.save()
+            return redirect("switches_por_rack", rack_id=rack.id)
+    else:
+        form = SwitchForm()
+
+    return render(request, "inventario/switch_form.html", {
+        "form": form,
+        "rack": rack
+    })
+
+@login_required
+@registrar_historico("Criação de Switch", "Switch")
 def switch_create(request):
     if request.method == "POST":
         form = SwitchForm(request.POST)
@@ -165,6 +178,26 @@ def switches_por_rack(request, rack_id):
     })
 
 @login_required
+@registrar_historico("Criação de Switch", "Switch")
+def switch_create_in_rack(request, rack_id):
+    rack = get_object_or_404(Rack, id=rack_id)
+
+    if request.method == "POST":
+        form = SwitchForm(request.POST)
+        if form.is_valid():
+            switch = form.save(commit=False)
+            switch.rack = rack
+            switch.save()
+            return redirect("switches_por_rack", rack_id=rack.id)
+    else:
+        form = SwitchForm()
+
+    return render(request, "switch_form.html", {
+        "form": form,
+        "rack": rack
+    })
+
+@login_required
 @registrar_historico("Edição de Portas do Switch", "Switch")
 def salvar_portas_switch(request, switch_id):
     switch = get_object_or_404(Switch, id=switch_id)
@@ -176,9 +209,20 @@ def salvar_portas_switch(request, switch_id):
         return redirect("switch_detail", pk=switch.id)
 
 @login_required
-def switch_detail(request, pk):
+def switch_detail(request, pk, rack_id=None):
     switch = get_object_or_404(Switch, pk=pk)
-    return render(request, "switch_detail.html", {"switch": switch})
+    total = switch.quantidade_portas
+    metade = total // 2
+
+    portas_primeira_metade = switch.portas.all()[:metade]
+    portas_segunda_metade = switch.portas.all()[metade:]
+
+    return render(request, "switch_detail.html", {
+        "switch": switch,
+        "rack_id": rack_id,
+        "portas_primeira_metade": portas_primeira_metade,
+        "portas_segunda_metade": portas_segunda_metade,
+    })
 
 @require_POST
 @registrar_historico("Edição de Porta", "Porta")
@@ -195,20 +239,13 @@ def porta_delete(request, pk):
     porta = get_object_or_404(Porta, pk=pk)
     if request.method == "POST":
         porta.delete()
-        # Historico.objects.create(
-        #     usuario=request.user,
-        #     acao="Exclusão de Porta",
-        #     modelo="Porta",
-        #     objeto_id=pk,
-        #     observacao=f"Porta {pk} excluída"
-        # )
         return redirect("porta_list")
     return render(request, "confirm_delete.html", {"obj": porta, "type": "Porta"})
 
 @login_required
 def historico_list(request):
-    logs = Historico.objects.all().order_by("-criado_em")
-    return render(request, "historico_list.html", {"logs": logs})
+    historicos = Historico.objects.all().order_by("-criado_em")
+    return render(request, "historico_list.html", {"historicos": historicos})
 
 @login_required
 def editar_portas(request, switch_id):

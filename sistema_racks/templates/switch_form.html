@@ -55,6 +55,11 @@
               {{ form.id_rack }}
             </div>
           </div>
+          
+          <div class="mb-3">
+            <label for="id_orientacao" class="form-label">Orientação das portas</label>
+            {{ form.orientacao }}
+          </div>
 
           <div class="mt-4 d-flex justify-content-between">
             <a href="{% url 'switch_list' %}" class="btn btn-secondary">Cancelar</a>

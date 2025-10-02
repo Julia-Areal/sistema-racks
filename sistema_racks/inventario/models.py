@@ -19,7 +19,7 @@ class Rack(models.Model):
 
     def __str__(self):
         return f"Rack {self.num_patrimonio} - {self.id_bloco.nome_bloco}"
-
+    
 
 class Switch(models.Model):
     id = models.AutoField(primary_key=True)
@@ -33,6 +33,16 @@ class Switch(models.Model):
     mac_address = models.CharField(max_length=17, blank=True, null=True)  # formato padrão XX:XX:XX:XX:XX:XX
     principal = models.BooleanField(default=False)
 
+    ENUM_ORIENTACAO = [
+        ("H", "Horizontal"),
+        ("V", "Vertical"),
+    ]
+    orientacao = models.CharField(
+        max_length=1,
+        choices=ENUM_ORIENTACAO,
+        default="H"
+    )
+
     def clean(self):
         if self.principal:
             qs = Switch.objects.filter(id_rack=self.id_rack, principal=True).exclude(id=self.id)
@@ -40,12 +50,16 @@ class Switch(models.Model):
                 raise ValidationError("Já existe um switch principal neste rack.")
 
     def save(self, *args, **kwargs):
-        self.full_clean() 
         super().save(*args, **kwargs)
+        portas_existentes = list(self.portas.values_list("numero", flat=True))
+        total = self.quantidade_portas
+        for numero in range(1, total + 1):
+            if numero not in portas_existentes:
+                Porta.objects.create(switch=self, numero=numero)
+        Porta.objects.filter(switch=self, numero__gt=total).delete()
 
     def __str__(self):
         return f"Switch {self.num_patrimonio} ({self.quantidade_portas} portas)"
-
 
 
 class Porta(models.Model):
@@ -61,8 +75,7 @@ class Historico(models.Model):
     id = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     acao = models.CharField(max_length=255)
-    modelo = models.CharField(max_length=50, null=True, blank=True)  # Ex: "Rack", "Switch", "Porta"
-    objeto_id = models.IntegerField(null=True, blank=True)  # PK do objeto
+    item = models.CharField(max_length=50, null=True, blank=True)  # Ex: "Rack", "Switch", "Porta"
     observacao = models.TextField(blank=True, null=True)
     criado_em = models.DateTimeField(auto_now_add=True)
 

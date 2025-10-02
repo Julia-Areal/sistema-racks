@@ -1,39 +1,36 @@
 {% extends "base.html" %}
-{% block title %}Histórico de Alterações{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="mb-4">📜 Histórico de Alterações</h2>
+    <h2 class="text-xl font-bold mb-4">Histórico de Ações</h2>
 
-    <table class="table table-hover align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>Data</th>
-                <th>Usuário</th>
-                <th>Ação</th>
-                <th>Modelo</th>
-                <th>Objeto ID</th>
-                <th>Observação</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in historico %}
-            <tr>
-                <td>{{ item.criado_em|date:"d/m/Y H:i" }}</td>
-                <td>{{ item.usuario.username if item.usuario else "Anônimo" }}</td>
-                <td><span class="badge bg-info">{{ item.acao }}</span></td>
-                <td>{{ item.modelo }}</td>
-                <td>{{ item.objeto_id }}</td>
-                <td>{{ item.observacao }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" class="text-center text-muted">
-                    Nenhum registro encontrado.
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% if historicos %}
+        <div class="overflow-x-auto">
+            <table class="table-auto w-full border border-gray-300 shadow-sm text-sm">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="border px-3 py-2 text-left">Data/Hora</th>
+                        <th class="border px-3 py-2 text-left">Usuário</th>
+                        <th class="border px-3 py-2 text-left">Ação</th>
+                        <th class="border px-3 py-2 text-left">Item</th>
+                        <th class="border px-3 py-2 text-left">Observação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for h in historicos %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="border px-3 py-2">{{ h.criado_em|date:"d/m/Y H:i" }}</td>
+                            <td class="border px-3 py-2">{{ h.usuario.username }}</td>
+                            <td class="border px-3 py-2">{{ h.acao }}</td>
+                            <td class="border px-3 py-2">{{ h.item }}</td>
+                            <td class="border px-3 py-2">{{ h.observacao }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-gray-600">Nenhuma ação registrada ainda.</p>
+    {% endif %}
 </div>
 {% endblock %}
