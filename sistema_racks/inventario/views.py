@@ -6,6 +6,11 @@ from django.views.decorators.http import require_POST
 from .models import Rack, Switch, Porta, Historico, Bloco
 from .forms import RackForm, SwitchForm, PortaFormSet
 from .utils import registrar_historico
+from django.http import HttpResponse
+from odf.opendocument import OpenDocumentSpreadsheet
+from odf.style import Style, TextProperties
+from odf.table import Table, TableRow, TableCell
+from odf.text import P
 
 # request handlers
 
@@ -18,7 +23,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect("home")
+            return redirect("rack_list")
     else:
         form = AuthenticationForm()
     return render(request, "login.html", {"form": form})
@@ -128,7 +133,7 @@ def switch_create_in_rack(request, rack_id):
     else:
         form = SwitchForm()
 
-    return render(request, "inventario/switch_form.html", {
+    return render(request, "switch_form.html", {
         "form": form,
         "rack": rack
     })
@@ -177,25 +182,6 @@ def switches_por_rack(request, rack_id):
         "switches": switches,
     })
 
-@login_required
-@registrar_historico("Criação de Switch", "Switch")
-def switch_create_in_rack(request, rack_id):
-    rack = get_object_or_404(Rack, id=rack_id)
-
-    if request.method == "POST":
-        form = SwitchForm(request.POST)
-        if form.is_valid():
-            switch = form.save(commit=False)
-            switch.rack = rack
-            switch.save()
-            return redirect("switches_por_rack", rack_id=rack.id)
-    else:
-        form = SwitchForm()
-
-    return render(request, "switch_form.html", {
-        "form": form,
-        "rack": rack
-    })
 
 @login_required
 @registrar_historico("Edição de Portas do Switch", "Switch")
@@ -234,15 +220,6 @@ def porta_update(request, porta_id):
     return redirect("switch_list")
 
 @login_required
-@registrar_historico("Deleção de Porta", "Porta")
-def porta_delete(request, pk):
-    porta = get_object_or_404(Porta, pk=pk)
-    if request.method == "POST":
-        porta.delete()
-        return redirect("porta_list")
-    return render(request, "confirm_delete.html", {"obj": porta, "type": "Porta"})
-
-@login_required
 def historico_list(request):
     historicos = Historico.objects.all().order_by("-criado_em")
     return render(request, "historico_list.html", {"historicos": historicos})
@@ -264,3 +241,58 @@ def editar_portas(request, switch_id):
         "switch": switch,
         "formset": formset
     })
+
+@login_required
+def export_rack_ods(request, rack_id):
+    rack = Rack.objects.prefetch_related("switches__portas").get(pk=rack_id)
+
+    doc = OpenDocumentSpreadsheet()
+    style = Style(name="Bold", family="paragraph")
+    style.addElement(TextProperties(fontweight="bold"))
+    doc.styles.addElement(style)
+
+    table = Table(name=f"Rack_{rack.num_patrimonio}")
+
+    # Nome do Rack
+    row = TableRow()
+    cell = TableCell()
+    cell.addElement(P(text=f"Rack: {rack.num_patrimonio}", stylename=style))
+    row.addElement(cell)
+    table.addElement(row)
+
+    for switch in rack.switches.all():
+        # Linha com nome do switch
+        row = TableRow()
+        cell = TableCell()
+        cell.addElement(P(text=f"Switch: {switch.num_patrimonio}", stylename=style))
+        row.addElement(cell)
+        table.addElement(row)
+
+        # Cabeçalho das portas
+        header_row = TableRow()
+        for col_name in ["Porta", "Valor"]:
+            cell = TableCell()
+            cell.addElement(P(text=col_name, stylename=style))
+            header_row.addElement(cell)
+        table.addElement(header_row)
+
+        # Portas
+        for porta in switch.portas.all().order_by("numero"):
+            row = TableRow()
+            cell_num = TableCell()
+            cell_num.addElement(P(text=str(porta.numero)))
+            row.addElement(cell_num)
+
+            cell_val = TableCell()
+            cell_val.addElement(P(text=porta.valor or ""))
+            row.addElement(cell_val)
+
+            table.addElement(row)
+
+    doc.spreadsheet.addElement(table)
+
+    response = HttpResponse(content_type="application/vnd.oasis.opendocument.spreadsheet")
+    response["Content-Disposition"] = f'attachment; filename="rack_{rack.num_patrimonio}.ods"'
+    doc.save(response)
+
+    return response

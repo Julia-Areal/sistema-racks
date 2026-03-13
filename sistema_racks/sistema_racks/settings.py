@@ -107,8 +107,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Configuração de login/logout
-LOGIN_REDIRECT_URL = "/"     # para onde redirecionar depois do login
-LOGOUT_REDIRECT_URL = "/login/"
+LOGIN_REDIRECT_URL = "inventario/"     # para onde redirecionar depois do login
+LOGOUT_REDIRECT_URL = "inventario/login/"
 
 
 # Internationalization

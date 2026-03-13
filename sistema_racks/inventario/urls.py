@@ -15,6 +15,7 @@ urlpatterns = [
     path("racks/<int:rack_id>/switches/", views.switches_por_rack, name="switches_por_rack"),
     path("racks/<int:rack_id>/switches/<int:pk>/", views.switch_detail, name="switch_detail_rack"),
     path("racks/<int:rack_id>/switches/novo/", views.switch_create_in_rack, name="switch_create_in_rack"),
+    path("racks/<int:rack_id>/exportar/", views.export_rack_ods, name="export_rack"),
 
     # Switches
     path("switches/", views.switch_list, name="switch_list"),
@@ -24,7 +25,6 @@ urlpatterns = [
     path("porta/<int:porta_id>/update/", views.porta_update, name="porta_update"),
     path("switch/<int:switch_id>/salvar_portas/", views.salvar_portas_switch, name="salvar_portas_switch"),
     path("switch/<int:pk>/", views.switch_detail, name="switch_detail"),
-    path("switch/<int:switch_id>/portas/", views.editar_portas, name="editar_portas"),
 
     # Histórico
     path("historico/", views.historico_list, name="historico_list"),

@@ -65,7 +65,7 @@ class Switch(models.Model):
 class Porta(models.Model):
     switch = models.ForeignKey(Switch, related_name="portas", on_delete=models.CASCADE)
     numero = models.PositiveIntegerField()
-    valor = models.CharField(max_length=20, blank=True, null=True)
+    valor = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return f"Porta {self.numero} - {self.valor or 'vazia'}"
