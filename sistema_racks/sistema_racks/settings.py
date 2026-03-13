@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-zcy*7jmvu%_ff^)!s*6g28rpajyu^4y&o=m$h(lkktk)6jb2$k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -38,11 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'inventario',
-    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,6 +49,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ['debug_toolbar']
+    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 INTERNAL_IPS = [
     '127.0.0.1',
@@ -107,16 +109,16 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Configuração de login/logout
-LOGIN_REDIRECT_URL = "inventario/"     # para onde redirecionar depois do login
-LOGOUT_REDIRECT_URL = "inventario/login/"
-
+LOGIN_REDIRECT_URL = "/inventario/"
+LOGOUT_REDIRECT_URL = "/inventario/login/"
+LOGIN_URL = "/inventario/login/"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'America/Lima'
+TIME_ZONE = "America/Rio_Branco"
 
 USE_I18N = True
 

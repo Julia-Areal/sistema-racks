@@ -125,13 +125,15 @@ def switch_create_in_rack(request, rack_id):
 
     if request.method == "POST":
         form = SwitchForm(request.POST)
+        form.fields.pop("id_rack", None)
         if form.is_valid():
             switch = form.save(commit=False)
-            switch.rack = rack
+            switch.id_rack = rack
             switch.save()
             return redirect("switches_por_rack", rack_id=rack.id)
     else:
         form = SwitchForm()
+        form.fields.pop("id_rack", None)
 
     return render(request, "switch_form.html", {
         "form": form,
@@ -210,6 +212,7 @@ def switch_detail(request, pk, rack_id=None):
         "portas_segunda_metade": portas_segunda_metade,
     })
 
+@login_required
 @require_POST
 @registrar_historico("Edição de Porta", "Porta")
 def porta_update(request, porta_id):
@@ -284,7 +287,7 @@ def export_rack_ods(request, rack_id):
             row.addElement(cell_num)
 
             cell_val = TableCell()
-            cell_val.addElement(P(text=porta.valor or ""))
+            cell_val.addElement(P(text=str(porta.valor) if porta.valor is not None else ""))
             row.addElement(cell_val)
 
             table.addElement(row)
